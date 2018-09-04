@@ -15,6 +15,7 @@
 @property (nonatomic, copy) NSString *subject;
 @property (nonatomic, copy) NSString *body;
 @property (nonatomic, copy) NSString *path;
+@property (nonatomic, strong) NSString *emailType;
 
 // 是否在邮件发送成功后删除path对应的文件，默认为NO
 @property (nonatomic, assign) BOOL deleteFileOnCompleted;
@@ -41,14 +42,17 @@
 # pragma mark init
 - (instancetype)initWithTo:(NSString *)to
                    subject:(NSString *)subject
-                      body:(NSString *)body;
-- (instancetype)initWithTo:(NSString *)to
-                   subject:(NSString *)subject
                       body:(NSString *)body
-                      path:(NSString *)path;
+                 emailType:(NSString *)emailType;
 - (instancetype)initWithTo:(NSString *)to
                    subject:(NSString *)subject
                       body:(NSString *)body
                       path:(NSString *)path
+                 emailType:(NSString *)emailType;
+- (instancetype)initWithTo:(NSString *)to
+                   subject:(NSString *)subject
+                      body:(NSString *)body
+                      path:(NSString *)path
+                 emailType:(NSString *)emailType
      deleteFileOnCompleted:(BOOL)del;
 @end

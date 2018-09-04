@@ -76,19 +76,21 @@ static NSString *globalPassword;
 - (instancetype)initWithTo:(NSString *)to
                    subject:(NSString *)subject
                       body:(NSString *)body
+                 emailType:(NSString *)emailType
 {
-    return [self initWithTo:to subject:subject body:body path:nil];
+    return [self initWithTo:to subject:subject body:body path:nil emailType:emailType];
 }
 
-- (instancetype)initWithTo:(NSString *)to subject:(NSString *)subject body:(NSString *)body path:(NSString *)path
+- (instancetype)initWithTo:(NSString *)to subject:(NSString *)subject body:(NSString *)body path:(NSString *)path emailType:(NSString *)emailType
 {
-    return [self initWithTo:to subject:subject body:body path:path deleteFileOnCompleted:NO];
+    return [self initWithTo:to subject:subject body:body path:path emailType:emailType deleteFileOnCompleted:NO];
 }
 
 - (instancetype)initWithTo:(NSString *)to
                    subject:(NSString *)subject
                       body:(NSString *)body
                       path:(NSString *)path
+                 emailType:(NSString *)emailType
      deleteFileOnCompleted:(BOOL)del
 {
     self = [super init];
@@ -103,6 +105,7 @@ static NSString *globalPassword;
         self.subject = subject;
         self.body = body;
         self.path = path;
+        self.emailType = emailType;
         self.deleteFileOnCompleted = del;
     }
     return self;
@@ -123,6 +126,7 @@ static NSString *globalPassword;
     }
     
     _body = _body ? _body : @"";
+    _emailType = _emailType ? _emailType : @"text/plain";
     
     SKPSMTPMessage *testMsg = [[SKPSMTPMessage alloc] init];
     testMsg.fromEmail = self.fromEmail;
@@ -135,7 +139,7 @@ static NSString *globalPassword;
     testMsg.subject = _subject;
     testMsg.wantsSecure = YES;
     
-    NSDictionary *plainPart = [NSDictionary dictionaryWithObjectsAndKeys:@"text/plain",kSKPSMTPPartContentTypeKey,
+    NSDictionary *plainPart = [NSDictionary dictionaryWithObjectsAndKeys:_emailType,kSKPSMTPPartContentTypeKey,
                                _body,kSKPSMTPPartMessageKey,@"8bit",kSKPSMTPPartContentTransferEncodingKey,nil];
     
     NSFileManager *fileManager = [NSFileManager defaultManager];
@@ -150,7 +154,7 @@ static NSString *globalPassword;
         {
             NSString *fileContent = [[NSString alloc] initWithData:vcfData encoding:NSUTF8StringEncoding];
             _body = [NSString stringWithFormat:@"%@\n\n%@", _body, fileContent];
-            plainPart = [NSDictionary dictionaryWithObjectsAndKeys:@"text/plain",kSKPSMTPPartContentTypeKey,
+            plainPart = [NSDictionary dictionaryWithObjectsAndKeys:_emailType,kSKPSMTPPartContentTypeKey,
                          _body,kSKPSMTPPartMessageKey,@"8bit",kSKPSMTPPartContentTransferEncodingKey,nil];
             testMsg.parts = [NSArray arrayWithObjects:plainPart,nil];
         }
